@@ -30,6 +30,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
@@ -39,7 +40,10 @@ public class SecurityConfig {
                         .requestMatchers(
                             "/swagger-ui.html",
                             "/swagger-ui/**",
-                            "/v3/api-docs/**"
+                            "/v3/api-docs/**",
+                            "/api/auth/signup",
+                            "/api/auth/login",
+                            "/api/auth/reissue"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

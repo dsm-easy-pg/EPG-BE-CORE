@@ -21,18 +21,25 @@ import java.util.Date;
 @Component
 public class JwtProvider {
 
+    private static final String TOKEN_TYPE_CLAIM = "type";
+    private static final String ACCESS_TOKEN_TYPE = "access";
+    private static final String REFRESH_TOKEN_TYPE = "refresh";
+
     private final SecretKey key;
     private final long accessTokenExpiration;
+    private final long refreshTokenExpiration;
 
     private final MemberRepository memberRepository;
 
     public JwtProvider(
             @Value("${jwt.secret}") String secretKey,
             @Value("${jwt.expiration_time}") long accessTokenExpiration,
+            @Value("${jwt.refresh_expiration_time}") long refreshTokenExpiration,
             MemberRepository memberRepository
     ) {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         this.accessTokenExpiration = accessTokenExpiration;
+        this.refreshTokenExpiration = refreshTokenExpiration;
         this.memberRepository = memberRepository;
     }
 
@@ -44,10 +51,42 @@ public class JwtProvider {
         return Jwts.builder()
                 .setSubject(String.valueOf(id))
                 .claim("role", role)
+                .claim(TOKEN_TYPE_CLAIM, ACCESS_TOKEN_TYPE)
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    // Refresh Token 생성
+    public String createRefreshToken(Long id) {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + refreshTokenExpiration);
+
+        return Jwts.builder()
+                .setSubject(String.valueOf(id))
+                .claim(TOKEN_TYPE_CLAIM, REFRESH_TOKEN_TYPE)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    // 토큰 subject(member id) 추출
+    public Long getMemberId(String token) {
+        return Long.valueOf(parseClaims(token).getSubject());
+    }
+
+    public boolean isAccessToken(String token) {
+        return ACCESS_TOKEN_TYPE.equals(parseClaims(token).get(TOKEN_TYPE_CLAIM, String.class));
+    }
+
+    public boolean isRefreshToken(String token) {
+        return REFRESH_TOKEN_TYPE.equals(parseClaims(token).get(TOKEN_TYPE_CLAIM, String.class));
+    }
+
+    public long getRefreshTokenExpiration() {
+        return refreshTokenExpiration;
     }
 
     // 토큰에서 Authentication 객체 추출
