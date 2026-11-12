@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: epg
+  datasource:
+    url: jdbc:mysql://localhost:3306/entry_assgin
+    username: root
+    password: vic6969!!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+jwt:
+  expiration_time: 86400000
+  secret: IDJFOIoiooOI09034NSLSOERidjsfoijseoqOIIO
