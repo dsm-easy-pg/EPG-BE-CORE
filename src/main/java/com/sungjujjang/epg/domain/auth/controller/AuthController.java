@@ -2,6 +2,7 @@ package com.sungjujjang.epg.domain.auth.controller;
 
 import com.sungjujjang.epg.domain.auth.dto.LoginRequest;
 import com.sungjujjang.epg.domain.auth.dto.ReissueRequest;
+import com.sungjujjang.epg.domain.auth.dto.SignupRequest;
 import com.sungjujjang.epg.domain.auth.dto.TokenResponse;
 import com.sungjujjang.epg.domain.auth.service.AuthService;
 import com.sungjujjang.epg.global.response.ApiResponse;
@@ -19,6 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+
+    @PostMapping("/signup")
+    public ApiResponse<Void> signup(@Valid @RequestBody SignupRequest request) {
+        authService.signup(request);
+        return ApiResponse.ok();
+    }
 
     @PostMapping("/login")
     public ApiResponse<TokenResponse> login(@Valid @RequestBody LoginRequest request) {

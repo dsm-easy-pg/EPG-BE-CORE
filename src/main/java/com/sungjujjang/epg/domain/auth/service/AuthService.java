@@ -1,8 +1,10 @@
 package com.sungjujjang.epg.domain.auth.service;
 
 import com.sungjujjang.epg.domain.auth.dto.LoginRequest;
+import com.sungjujjang.epg.domain.auth.dto.SignupRequest;
 import com.sungjujjang.epg.domain.auth.dto.TokenResponse;
 import com.sungjujjang.epg.domain.auth.entity.Member;
+import com.sungjujjang.epg.domain.auth.enums.Role;
 import com.sungjujjang.epg.domain.auth.repository.MemberRepository;
 import com.sungjujjang.epg.global.exception.BusinessException;
 import com.sungjujjang.epg.global.exception.ErrorCode;
@@ -21,6 +23,21 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
+
+    @Transactional
+    public void signup(SignupRequest request) {
+        if (memberRepository.existsByUsername(request.username())) {
+            throw new BusinessException(ErrorCode.DUPLICATE_USERNAME);
+        }
+
+        Member member = Member.create(
+                request.username(),
+                passwordEncoder.encode(request.password()),
+                Role.USER
+        );
+
+        memberRepository.save(member);
+    }
 
     public TokenResponse login(LoginRequest request) {
         Member member = memberRepository.findByUsername(request.username())
