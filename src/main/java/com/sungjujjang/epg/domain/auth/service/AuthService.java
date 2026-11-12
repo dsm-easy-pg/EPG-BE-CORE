@@ -43,6 +43,10 @@ public class AuthService {
         Member member = memberRepository.findByUsername(request.username())
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
+        if (member.isWithdrawn()) {
+            throw new BusinessException(ErrorCode.WITHDRAWN_MEMBER);
+        }
+
         if (!passwordEncoder.matches(request.password(), member.getPassword())) {
             throw new BusinessException(ErrorCode.INVALID_PASSWORD);
         }
@@ -66,10 +70,27 @@ public class AuthService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
+        if (member.isWithdrawn()) {
+            throw new BusinessException(ErrorCode.WITHDRAWN_MEMBER);
+        }
+
         return issueTokens(member);
     }
 
     public void logout(Long memberId) {
+        refreshTokenService.delete(memberId);
+    }
+
+    @Transactional
+    public void withdraw(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+
+        if (member.isWithdrawn()) {
+            throw new BusinessException(ErrorCode.WITHDRAWN_MEMBER);
+        }
+
+        member.withdraw();
         refreshTokenService.delete(memberId);
     }
 

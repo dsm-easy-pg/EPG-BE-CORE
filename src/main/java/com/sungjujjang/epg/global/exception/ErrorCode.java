@@ -18,6 +18,8 @@ public enum ErrorCode {
 
     DUPLICATE_USERNAME(409, "DUPLICATE_USERNAME", "이미 사용 중인 아이디입니다."),
 
+    WITHDRAWN_MEMBER(401, "WITHDRAWN_MEMBER", "탈퇴한 회원입니다."),
+
     INVALID_PASSWORD(401, "INVALID_PASSWORD", "비밀번호가 일치하지 않습니다."),
 
     INVALID_REFRESH_TOKEN(401, "INVALID_REFRESH_TOKEN", "유효하지 않은 리프레시 토큰입니다."),

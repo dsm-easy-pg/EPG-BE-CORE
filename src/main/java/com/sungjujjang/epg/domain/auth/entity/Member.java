@@ -7,6 +7,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,11 +29,21 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    private LocalDateTime withdrawnAt;
+
     public static Member create(String username, String password, Role role) {
         Member member = new Member();
         member.username = username;
         member.password = password;
         member.role = role;
         return member;
+    }
+
+    public void withdraw() {
+        this.withdrawnAt = LocalDateTime.now();
+    }
+
+    public boolean isWithdrawn() {
+        return this.withdrawnAt != null;
     }
 }
