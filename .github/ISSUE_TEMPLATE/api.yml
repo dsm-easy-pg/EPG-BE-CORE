@@ -1,0 +1,55 @@
+name: API
+description: API 명세 이슈를 작성합니다.
+title: "[API] "
+labels: ["API"]
+body:
+  - type: input
+    id: feature
+    attributes:
+      label: 기능명
+      description: 구현할 API의 기능명을 작성해주세요.
+      placeholder: "예: 송금 생성"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: method
+    attributes:
+      label: HTTP Method
+      options:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+    validations:
+      required: true
+
+  - type: input
+    id: endpoint
+    attributes:
+      label: Endpoint
+      description: API 경로를 작성해주세요.
+      placeholder: "예: /api/rem/"
+    validations:
+      required: true
+
+  - type: textarea
+    id: request
+    attributes:
+      label: 요청
+      description: 요청 명세를 작성해주세요. 없으면 "없음"으로 작성해주세요.
+      placeholder: |
+        - 필드명: 타입 (설명)
+    validations:
+      required: true
+
+  - type: textarea
+    id: response
+    attributes:
+      label: 응답
+      description: 응답 명세를 작성해주세요.
+      placeholder: |
+        - 필드명
+    validations:
+      required: true

@@ -1,16 +1,32 @@
 spring:
   application:
     name: epg
+
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
-    url: jdbc:mysql://localhost:3306/entry_assgin
-    username: root
-    password: vic6969!!
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
 
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    show-sql: ${JPA_SHOW_SQL:true}
+
 jwt:
-  expiration_time: 86400000
-  secret: IDJFOIoiooOI09034NSLSOERidjsfoijseoqOIIO
+  expiration_time: ${JWT_ACCESS_EXPIRATION:86400000}
+  refresh_expiration_time: ${JWT_REFRESH_EXPIRATION:1209600000}
+  secret: ${JWT_SECRET}
+
+cookie:
+  secure: ${COOKIE_SECURE:false}
+  same-site: ${COOKIE_SAME_SITE:Lax}
