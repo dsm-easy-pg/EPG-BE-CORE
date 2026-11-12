@@ -26,3 +26,7 @@ jwt:
   expiration_time: ${JWT_ACCESS_EXPIRATION:86400000}
   refresh_expiration_time: ${JWT_REFRESH_EXPIRATION:1209600000}
   secret: ${JWT_SECRET}
+
+cookie:
+  secure: ${COOKIE_SECURE:false}
+  same-site: ${COOKIE_SAME_SITE:Lax}
