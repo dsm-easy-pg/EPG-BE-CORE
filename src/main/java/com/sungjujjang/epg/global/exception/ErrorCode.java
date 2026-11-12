@@ -15,6 +15,7 @@ public enum ErrorCode {
     NOT_FOUND(404, "NOT_FOUND", "리소스가 없습니다."),
 
     MEMBER_NOT_FOUND(404, "MEMBER_NOT_FOUND", "회원을 찾을 수 없습니다."),
+    REMITTANCE_NOT_FOUND(404, "REMITTANCE_NOT_FOUND", "송금을 찾을 수 없습니다."),
 
     DUPLICATE_USERNAME(409, "DUPLICATE_USERNAME", "이미 사용 중인 아이디입니다."),
 
