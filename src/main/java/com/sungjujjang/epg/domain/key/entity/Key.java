@@ -25,7 +25,7 @@ public class Key {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(nullable = false)
     private Member member;
 

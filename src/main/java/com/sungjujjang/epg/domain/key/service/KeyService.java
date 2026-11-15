@@ -10,6 +10,7 @@ import com.sungjujjang.epg.domain.key.entity.Key;
 import com.sungjujjang.epg.domain.key.repository.KeyRepository;
 import com.sungjujjang.epg.global.exception.BusinessException;
 import com.sungjujjang.epg.global.exception.ErrorCode;
+import com.sungjujjang.epg.global.util.HmacUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,10 +24,9 @@ import java.util.*;
 @Transactional(readOnly = true)
 public class KeyService {
 
-    private final PasswordEncoder passwordEncoder;
-
     private final KeyRepository keyRepository;
     private final MemberRepository memberRepository;
+    private final HmacUtil hmacUtil;
 
     @Transactional
     public CreateKeyResponse createKey(
@@ -46,7 +46,7 @@ public class KeyService {
                 createKeyRequest.expDay().getDay()
         );
 
-        String hashedKey = passwordEncoder.encode(apiKey);
+        String hashedKey = hmacUtil.hmacSha256(apiKey);
 
         Key key = Key.builder()
                 .hashedKey(hashedKey)
