@@ -1,6 +1,7 @@
 package com.sungjujjang.epg.domain.auth.entity;
 
 import com.sungjujjang.epg.domain.auth.enums.Role;
+import com.sungjujjang.epg.domain.key.entity.Key;
 import com.sungjujjang.epg.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -45,5 +47,22 @@ public class Member extends BaseEntity {
 
     public boolean isWithdrawn() {
         return this.withdrawnAt != null;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Member member)) {
+            return false;
+        }
+
+        return Objects.equals(getId(), member.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return Objects.hash(id);
     }
 }

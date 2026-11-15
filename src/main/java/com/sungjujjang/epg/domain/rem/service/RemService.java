@@ -58,7 +58,7 @@ public class RemService {
         Remittance remittance = remittanceRepository.findByUuid(uuid)
                 .orElseThrow(() -> new BusinessException(ErrorCode.REMITTANCE_NOT_FOUND));
 
-        if (remittance.getMember() != member) {
+        if (!remittance.getMember().equals(member)) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
 
