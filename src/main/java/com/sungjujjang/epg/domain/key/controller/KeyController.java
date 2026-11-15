@@ -35,4 +35,13 @@ public class KeyController {
         GetKeyListResponse getKeyListResponse = keyService.getKeyList(userId);
         return ApiResponse.ok(getKeyListResponse);
     }
+
+    @DeleteMapping("/{keyId}")
+    public ApiResponse<Void> deleteKey(
+            @Parameter(hidden = true) @CurrentUserId Long userId,
+            @PathVariable Long keyId
+    ) {
+        keyService.deleteKey(userId, keyId);
+        return ApiResponse.ok();
+    }
 }

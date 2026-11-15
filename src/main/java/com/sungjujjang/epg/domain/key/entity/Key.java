@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -30,4 +31,22 @@ public class Key {
 
     @Column(nullable = false)
     private LocalDate expDate;
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Key key)) {
+            return false;
+        }
+
+        return getId() != null && Objects.equals(getId(), key.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return Objects.hash(id);
+    }
+
 }

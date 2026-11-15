@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,16 +27,6 @@ public class KeyService {
 
     private final KeyRepository keyRepository;
     private final MemberRepository memberRepository;
-
-    public boolean checkExistKey(Member member, String keyString) {
-        String hashedKey = passwordEncoder.encode(keyString);
-        Optional<Key> key = keyRepository.findByHashedKey(hashedKey);
-
-        return key
-            .filter(value -> value.getMember().equals(member))
-            .isPresent();
-
-    }
 
     @Transactional
     public CreateKeyResponse createKey(
@@ -87,5 +74,20 @@ public class KeyService {
                 .toList();
 
         return new GetKeyListResponse(keys);
+    }
+
+    @Transactional
+    public void deleteKey(Long userId, Long keyId) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Key key = keyRepository.findById(keyId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.KEY_NOT_FOUND));
+
+        if (!key.getMember().equals(member)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
+
+        keyRepository.delete(key);
     }
 }
