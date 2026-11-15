@@ -3,6 +3,7 @@ package com.sungjujjang.epg.domain.rem.service;
 import com.sungjujjang.epg.domain.auth.entity.Member;
 import com.sungjujjang.epg.domain.auth.repository.MemberRepository;
 import com.sungjujjang.epg.domain.rem.dto.CreateRemResponse;
+import com.sungjujjang.epg.domain.rem.dto.GetRemMetricResponse;
 import com.sungjujjang.epg.domain.rem.dto.GetRemResponse;
 import com.sungjujjang.epg.domain.rem.dto.RemittanceDto;
 import com.sungjujjang.epg.domain.rem.entity.Remittance;
@@ -107,5 +108,37 @@ public class RemService {
         );
 
         return remittancePage.map(RemittanceDto::of);
+    }
+
+    public GetRemMetricResponse getRemMetric(
+            LocalDate startDate,
+            LocalDate endDate,
+            Integer minAmount,
+            Boolean isChecked,
+            Long userId
+    ) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+
+        LocalDateTime startDateTime = null;
+        if (startDate != null) {
+            startDateTime = startDate.atStartOfDay();
+        }
+
+        LocalDateTime endDateTime = null;
+        if (startDate != null) {
+            endDateTime = endDate.atTime(23, 59, 59);
+        }
+
+        GetRemMetricResponse getRemMetricResponse =
+            remittanceRepository.getMetric(
+                    startDateTime,
+                    endDateTime,
+                    minAmount,
+                    isChecked,
+                    member
+            );
+
+        return getRemMetricResponse;
     }
 }

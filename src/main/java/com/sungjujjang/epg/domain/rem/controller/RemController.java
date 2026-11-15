@@ -1,9 +1,6 @@
 package com.sungjujjang.epg.domain.rem.controller;
 
-import com.sungjujjang.epg.domain.rem.dto.CreateRemRequest;
-import com.sungjujjang.epg.domain.rem.dto.CreateRemResponse;
-import com.sungjujjang.epg.domain.rem.dto.GetRemResponse;
-import com.sungjujjang.epg.domain.rem.dto.RemittanceDto;
+import com.sungjujjang.epg.domain.rem.dto.*;
 import com.sungjujjang.epg.domain.rem.service.RemService;
 import com.sungjujjang.epg.global.annotations.CurrentUserId.CurrentUserId;
 import com.sungjujjang.epg.global.response.ApiResponse;
@@ -76,5 +73,30 @@ public class RemController {
                 );
 
         return ApiResponse.ok(remittanceDtoPage);
+    }
+
+    @GetMapping("/metric")
+    public ApiResponse<GetRemMetricResponse> getRemMetric(
+            @Parameter(hidden = true) @CurrentUserId
+            Long userId,
+
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate startDate,
+
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate endDate,
+
+            @RequestParam(required = false)
+            Integer minAmount,
+
+            @RequestParam(required = false)
+            Boolean isChecked
+    ) {
+        GetRemMetricResponse getRemMetricResponse =
+                remService.getRemMetric(
+                        startDate, endDate, minAmount, isChecked, userId
+                );
+
+        return ApiResponse.ok(getRemMetricResponse);
     }
 }
