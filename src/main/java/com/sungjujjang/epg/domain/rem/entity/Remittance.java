@@ -31,4 +31,8 @@ public class Remittance extends BaseEntity {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Member member;
+
+    public void check() {
+        this.checked = true;
+    }
 }

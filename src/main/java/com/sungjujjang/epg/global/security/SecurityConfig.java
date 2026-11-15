@@ -45,6 +45,9 @@ public class SecurityConfig {
                             "/api/auth/login",
                             "/api/auth/reissue"
                         ).permitAll()
+                        .requestMatchers(
+                            "/api/rem/v1/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
 
