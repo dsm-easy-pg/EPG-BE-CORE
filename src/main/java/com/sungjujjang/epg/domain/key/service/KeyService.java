@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.UUID;
 
@@ -29,6 +30,16 @@ public class KeyService {
 
     private final KeyRepository keyRepository;
     private final MemberRepository memberRepository;
+
+    public boolean checkExistKey(Member member, String keyString) {
+        String hashedKey = passwordEncoder.encode(keyString);
+        Optional<Key> key = keyRepository.findByHashedKey(hashedKey);
+
+        return key
+            .filter(value -> value.getMember().equals(member))
+            .isPresent();
+
+    }
 
     @Transactional
     public CreateKeyResponse createKey(
