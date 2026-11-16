@@ -65,7 +65,7 @@ public class SecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(@NonNull HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Collections.singletonList("http://localhost:5173/"));
+                        config.setAllowedOrigins(java.util.List.of("http://localhost:5173", "https://epg-core.dsmhs.kr"));
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
