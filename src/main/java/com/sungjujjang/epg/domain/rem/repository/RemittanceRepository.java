@@ -15,7 +15,11 @@ import java.util.Optional;
 
 public interface RemittanceRepository extends JpaRepository<Remittance, Long> {
     Optional<Remittance> findByUuid(String uuid);
-    Optional<Remittance> findByMemberAndName(Member member, String name);
+    Optional<Remittance> findFirstByMemberAndNameAndCreatedAtAfterOrderByCreatedAtDesc(
+            Member member,
+            String name,
+            LocalDateTime createdAt
+    );
 
     @Query("""
         SELECT r FROM Remittance r

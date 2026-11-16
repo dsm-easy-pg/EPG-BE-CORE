@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -102,7 +103,14 @@ public class RemApiService {
 
         Member member = key.getMember();
 
-        Remittance remittance = remittanceRepository.findByMemberAndName(member, name)
+        LocalDateTime threshold = LocalDateTime.now().minusMinutes(10);
+
+        Remittance remittance = remittanceRepository
+                .findFirstByMemberAndNameAndCreatedAtAfterOrderByCreatedAtDesc(
+                        member,
+                        name,
+                        threshold
+                )
                 .orElseThrow(() -> new BusinessException(ErrorCode.REMITTANCE_NOT_FOUND));
 
         if (remittance.getAmount() != amount) {
