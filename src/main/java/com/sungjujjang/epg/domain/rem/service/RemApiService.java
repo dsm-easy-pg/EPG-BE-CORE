@@ -96,7 +96,7 @@ public class RemApiService {
     }
 
     @Transactional
-    public void checkRemWithName(String apiKey, String name) {
+    public void checkRemWithName(String apiKey, String name, int amount) {
         Key key = keyRepository.findByHashedKey(hmacUtil.hmacSha256(apiKey))
                 .orElseThrow(() -> new BusinessException(ErrorCode.KEY_NOT_FOUND));
 
@@ -104,6 +104,10 @@ public class RemApiService {
 
         Remittance remittance = remittanceRepository.findByMemberAndName(member, name)
                 .orElseThrow(() -> new BusinessException(ErrorCode.REMITTANCE_NOT_FOUND));
+
+        if (remittance.getAmount() != amount) {
+            return;
+        }
 
         remittance.check();
         remittanceRepository.save(remittance);

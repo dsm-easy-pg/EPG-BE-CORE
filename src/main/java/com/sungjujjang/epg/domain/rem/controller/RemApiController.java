@@ -1,5 +1,6 @@
 package com.sungjujjang.epg.domain.rem.controller;
 
+import com.sungjujjang.epg.domain.rem.dto.CheckRemRequest;
 import com.sungjujjang.epg.domain.rem.dto.CreateRemRequest;
 import com.sungjujjang.epg.domain.rem.dto.CreateRemResponse;
 import com.sungjujjang.epg.domain.rem.dto.GetRemCheckedResponse;
@@ -32,9 +33,10 @@ public class RemApiController {
     @PostMapping("/name/{name}")
     public ApiResponse<Void> checkRemWithName(
             @RequestHeader("X-Api-Key") String apiKey,
-            @PathVariable String name
+            @PathVariable String name,
+            @Valid @RequestBody CheckRemRequest checkRemRequest
     ) {
-        remApiService.checkRemWithName(apiKey, name);
+        remApiService.checkRemWithName(apiKey, name, checkRemRequest.amount());
         return ApiResponse.ok();
     }
 
