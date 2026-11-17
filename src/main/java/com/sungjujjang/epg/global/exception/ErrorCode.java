@@ -9,6 +9,7 @@ public enum ErrorCode {
     NOT_VALID_DTO_ERR(400, "NOT_VALID_DTO_ERR", "유효하지 않은 요청입니다."),
 
     UNAUTHORIZED(401, "UNAUTHORIZED", "인증이 필요합니다."),
+    API_KEY_EXPIRED(401, "API_KEY_EXPIRED", "API 키가 만료되었습니다."),
 
     FORBIDDEN(403, "FORBIDDEN", "권한이 없습니다."),
 

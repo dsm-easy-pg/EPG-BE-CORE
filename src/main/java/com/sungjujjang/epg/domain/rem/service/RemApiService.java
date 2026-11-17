@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -33,10 +34,19 @@ public class RemApiService {
     private final HmacUtil hmacUtil;
     private final RandomStringGenerator randomStringGenerator;
 
+    private boolean isKeyExpired(Key key) {
+        LocalDate now = LocalDate.now();
+        return key.getExpDate().isBefore(now);
+    }
+
     @Transactional
     public CreateRemResponse createRem(String apiKey, int amount) {
         Key key = keyRepository.findByHashedKey(hmacUtil.hmacSha256(apiKey))
                 .orElseThrow(() -> new BusinessException(ErrorCode.KEY_NOT_FOUND));
+
+        if (isKeyExpired(key)) {
+            throw new BusinessException(ErrorCode.API_KEY_EXPIRED);
+        }
 
         Member member = key.getMember();
 
@@ -66,6 +76,10 @@ public class RemApiService {
         Key key = keyRepository.findByHashedKey(hmacUtil.hmacSha256(apiKey))
                 .orElseThrow(() -> new BusinessException(ErrorCode.KEY_NOT_FOUND));
 
+        if (isKeyExpired(key)) {
+            throw new BusinessException(ErrorCode.API_KEY_EXPIRED);
+        }
+
         Member member = key.getMember();
 
         Remittance remittance = remittanceRepository.findByUuid(uuid)
@@ -82,6 +96,10 @@ public class RemApiService {
     public void checkRemWithUuid(String apiKey, String uuid) {
         Key key = keyRepository.findByHashedKey(hmacUtil.hmacSha256(apiKey))
                 .orElseThrow(() -> new BusinessException(ErrorCode.KEY_NOT_FOUND));
+
+        if (isKeyExpired(key)) {
+            throw new BusinessException(ErrorCode.API_KEY_EXPIRED);
+        }
 
         Member member = key.getMember();
 
@@ -100,6 +118,10 @@ public class RemApiService {
     public void checkRemWithName(String apiKey, String name, int amount) {
         Key key = keyRepository.findByHashedKey(hmacUtil.hmacSha256(apiKey))
                 .orElseThrow(() -> new BusinessException(ErrorCode.KEY_NOT_FOUND));
+
+        if (isKeyExpired(key)) {
+            throw new BusinessException(ErrorCode.API_KEY_EXPIRED);
+        }
 
         Member member = key.getMember();
 
@@ -124,6 +146,10 @@ public class RemApiService {
     public GetRemCheckedResponse getRemChecked(String apiKey, String uuid) {
         Key key = keyRepository.findByHashedKey(hmacUtil.hmacSha256(apiKey))
                 .orElseThrow(() -> new BusinessException(ErrorCode.KEY_NOT_FOUND));
+
+        if (isKeyExpired(key)) {
+            throw new BusinessException(ErrorCode.API_KEY_EXPIRED);
+        }
 
         Member member = key.getMember();
 
