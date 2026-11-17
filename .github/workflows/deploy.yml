@@ -44,51 +44,18 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
           DEPLOY_DIR: ${{ secrets.DEPLOY_DIR || '/root/epg' }}
-          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          JWT_ACCESS_EXPIRATION: ${{ secrets.JWT_ACCESS_EXPIRATION }}
-          JWT_REFRESH_EXPIRATION: ${{ secrets.JWT_REFRESH_EXPIRATION }}
-          API_KEY_SECRET: ${{ secrets.API_KEY_SECRET }}
-          JPA_DDL_AUTO: ${{ secrets.JPA_DDL_AUTO }}
-          JPA_SHOW_SQL: ${{ secrets.JPA_SHOW_SQL }}
-          COOKIE_SECURE: ${{ secrets.COOKIE_SECURE }}
-          COOKIE_SAME_SITE: ${{ secrets.COOKIE_SAME_SITE }}
         run: |
           set -e
           sudo apt-get update -qq
           sudo apt-get install -y -qq sshpass
 
-          compose_b64=$(base64 -w0 docker-compose.yml)
-          env_b64=$(printf '%s\n' \
-            "MYSQL_DATABASE=$MYSQL_DATABASE" \
-            "MYSQL_USER=$MYSQL_USER" \
-            "MYSQL_PASSWORD=$MYSQL_PASSWORD" \
-            "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
-            "REDIS_PASSWORD=$REDIS_PASSWORD" \
-            "JWT_SECRET=$JWT_SECRET" \
-            "JWT_ACCESS_EXPIRATION=$JWT_ACCESS_EXPIRATION" \
-            "JWT_REFRESH_EXPIRATION=$JWT_REFRESH_EXPIRATION" \
-            "API_KEY_SECRET=$API_KEY_SECRET" \
-            "JPA_DDL_AUTO=$JPA_DDL_AUTO" \
-            "JPA_SHOW_SQL=$JPA_SHOW_SQL" \
-            "COOKIE_SECURE=$COOKIE_SECURE" \
-            "COOKIE_SAME_SITE=$COOKIE_SAME_SITE" \
-            | base64 -w0)
-
-          output=$(printf '%s\n' \
-            "mkdir -p '$DEPLOY_DIR'" \
+          output=$({ sleep 3; printf '%s\n' \
             "cd '$DEPLOY_DIR'" \
-            "printf %s '$compose_b64' | base64 -d > docker-compose.yml" \
-            "printf %s '$env_b64' | base64 -d > .env" \
             "docker compose pull" \
             "docker compose up -d" \
             "docker compose ps" \
             "echo DEPLOY_DONE_\$((6*7))" \
-            "exit" \
+            "exit"; } \
             | sshpass -p "$SSH_PASSWORD" ssh -tt -o StrictHostKeyChecking=no \
                 -o ConnectTimeout=15 -p "$SSH_PORT" "$SSH_USER@$SSH_HOST")
           echo "$output"
