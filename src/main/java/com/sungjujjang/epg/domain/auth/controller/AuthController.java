@@ -5,8 +5,10 @@ import com.sungjujjang.epg.domain.auth.dto.LoginRequest;
 import com.sungjujjang.epg.domain.auth.dto.SignupRequest;
 import com.sungjujjang.epg.domain.auth.dto.TokenResponse;
 import com.sungjujjang.epg.domain.auth.service.AuthService;
+import com.sungjujjang.epg.global.annotations.CurrentUserId.CurrentUserId;
 import com.sungjujjang.epg.global.response.ApiResponse;
 import com.sungjujjang.epg.global.security.jwt.RefreshTokenCookieProvider;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -61,8 +63,8 @@ public class AuthController {
     }
 
     @DeleteMapping("/withdraw")
-    public ApiResponse<Void> withdraw(Authentication authentication, HttpServletResponse response) {
-        authService.withdraw(Long.valueOf(authentication.getName()));
+    public ApiResponse<Void> withdraw(@Parameter(hidden = true) @CurrentUserId Long userId, HttpServletResponse response) {
+        authService.withdraw(userId);
         expireRefreshTokenCookie(response);
         return ApiResponse.ok();
     }
