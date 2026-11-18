@@ -128,7 +128,7 @@ public class RemApiService {
         LocalDateTime threshold = LocalDateTime.now().minusMinutes(10);
 
         Remittance remittance = remittanceRepository
-                .findFirstByMemberAndNameAndCreatedAtAfterOrderByCreatedAtDesc(
+                .findFirstByMemberAndNameContainingAndCreatedAtAfterOrderByCreatedAtDesc(
                         member,
                         name,
                         threshold
